@@ -103,25 +103,108 @@ reports/<run-id>/
 └── security-score.md      # Security scorecard
 ```
 
+## Check Registry — Extensibility Model
+
+Each audit check is a Python function decorated with `@check(...)`:
+
+```python
+from audit_runner import check, Finding, Severity
+
+@check(
+    id="SEC-001",
+    domain="security",
+    standard="PCI-DSS-v4.0",
+    req="6.3.2",
+    severity=Severity.CRITICAL,
+    test_method="automated",
+)
+def jwt_algorithm_pinning(target: AuditTarget) -> list[Finding]:
+    """Verify the API rejects tokens signed with alg:none."""
+    ...
+```
+
+The `CheckRegistry` discovers checks via:
+1. **Static import** — built-in checks in `checks/<domain>/`
+2. **Entry points** — third-party plugins installed via pip declare `audit_runner.checks` entry point
+
+This means external teams can ship domain-specific check packages without forking the core runner.
+
 ## Deployment Model
 
-The framework runs as a local CLI tool — no servers required for the core audit workflow.
+The framework runs as a local CLI tool — no servers, no persistent state.
 
-- **Build**: `npm run build` (or `make build`) — compiles TypeScript checks to JavaScript (M3)
-- **Test**: `npm test` — runs check unit tests against mock system responses
-- **Distribute**: published as an npm package or Docker image for teams without Node.js
+```
+pip install payment-audit-runner     # or pipx install for isolated install
+audit-runner --help
+```
 
-> Technology decisions are documented in `docs/TECH-STACK.md` (pending PAY-5).
+- **Test**: `pytest checks/ runner/ -q` — runs check unit tests against mock system responses
+- **Distribute**: `pyproject.toml`-based package, published to PyPI; Docker image available via ghcr.io for teams that want a pre-configured environment
+- **Docs**: `mkdocs build` or `mkdocs serve` for local preview; auto-deployed to GitHub Pages on push to `main`
+
+> Technology decisions are documented in [`docs/TECH-STACK.md`](TECH-STACK.md).
+
+## Directory Layout
+
+```
+PaymentGatewayAuditFramework/
+├── README.md
+├── ROADMAP.md
+├── mkdocs.yml                      # Docs site config
+├── pyproject.toml                  # Package definition (M3)
+├── docs/
+│   ├── ARCHITECTURE.md             # This file
+│   ├── TECH-STACK.md               # Technology decisions (PAY-12)
+│   ├── CONTRIBUTING.md
+│   ├── THREAT-MODEL.md
+│   └── SECURITY-REVIEW.md          # (M2 — Security Engineer)
+├── methodology/
+│   ├── index.md
+│   ├── architecture/checklist.md   # M2
+│   ├── competitive/checklist.md    # M2
+│   ├── merchant/checklist.md       # M2
+│   ├── white-label/checklist.md    # M2
+│   └── security/checklist.md       # M2
+├── checks/                         # M3 — machine-executable check modules
+│   ├── __init__.py
+│   ├── architecture/
+│   ├── competitive/
+│   ├── merchant/
+│   ├── white_label/
+│   └── security/
+├── runner/                         # M3 — CLI and orchestration
+│   ├── __init__.py
+│   ├── cli.py                      # Typer app — `audit run`, `audit report`
+│   ├── registry.py                 # CheckRegistry, @check decorator
+│   ├── target.py                   # AuditTarget — wraps the system under audit
+│   ├── runner.py                   # Executes checks, aggregates findings
+│   └── report.py                   # Renders JSON, Markdown, HTML outputs
+├── templates/                      # Jinja2 report templates
+│   ├── executive-summary.md.j2
+│   ├── gap-analysis.md.j2
+│   └── security-score.md.j2
+├── reference-architectures/        # M4
+│   ├── stripe-like/
+│   ├── adyen-like/
+│   ├── in-house-acquirer/
+│   ├── psp-aggregator/
+│   └── embedded-finance/
+└── .github/workflows/
+    ├── ci.yml                      # Lint, type check, tests
+    └── docs-deploy.yml             # MkDocs → GitHub Pages
+```
 
 ## Key Decisions
 
 | Decision | Context | Rationale |
 |----------|---------|-----------|
 | Document-first approach | Methodology created before automation | Allows manual audits before CLI is ready; catches methodology gaps early |
+| Python as core language | Security tooling ecosystem | Industry standard; check contributors need zero ramp-up |
 | Per-domain modularity | Each domain is an independent module | Teams can run a single domain (e.g., security only) without touching others |
+| Plugin extensibility via entry points | Third-party check packages | Teams can ship private checks without forking the framework |
 | PCI DSS v4.0 as primary standard | Multiple standards available | PCI DSS v4.0 is the most current and commonly required for payment platforms |
 | Reference architecture baselines | Gap analysis requires a comparison point | Corefy and PayAdmit are established market leaders, providing a realistic benchmark |
+| No persistent state / no database | Audit is a point-in-time assessment | Keeps the tool simple; findings are files, not records |
 
 ---
-_Architecture subject to revision pending tech stack decisions (PAY-5) and system architecture design (PAY-6)._
-_Last updated: 2026-04-16 by Technical Writer._
+_Last updated: 2026-04-16 by Engineer ([PAY-10](/PAY/issues/PAY-10))._
