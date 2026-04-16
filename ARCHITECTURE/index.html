@@ -733,10 +733,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#check-registry-extensibility-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Registry — Extensibility Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#deployment-model" class="md-nav__link">
     <span class="md-ellipsis">
       
         Deployment Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directory Layout
       
     </span>
   </a>
@@ -896,16 +918,86 @@
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>├── backlog.csv            # Improvement backlog (exportable to Jira/Linear)
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>└── security-score.md      # Security scorecard
 </code></pre></div>
+<h2 id="check-registry-extensibility-model">Check Registry — Extensibility Model<a class="headerlink" href="#check-registry-extensibility-model" title="Permanent link">&para;</a></h2>
+<p>Each audit check is a Python function decorated with <code>@check(...)</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">audit_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">check</span><span class="p">,</span> <span class="n">Finding</span><span class="p">,</span> <span class="n">Severity</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nd">@check</span><span class="p">(</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;SEC-001&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;security&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">standard</span><span class="o">=</span><span class="s2">&quot;PCI-DSS-v4.0&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">req</span><span class="o">=</span><span class="s2">&quot;6.3.2&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">test_method</span><span class="o">=</span><span class="s2">&quot;automated&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">def</span><span class="w"> </span><span class="nf">jwt_algorithm_pinning</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">AuditTarget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]:</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Verify the API rejects tokens signed with alg:none.&quot;&quot;&quot;</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="o">...</span>
+</code></pre></div>
+<p>The <code>CheckRegistry</code> discovers checks via:
+1. <strong>Static import</strong> — built-in checks in <code>checks/&lt;domain&gt;/</code>
+2. <strong>Entry points</strong> — third-party plugins installed via pip declare <code>audit_runner.checks</code> entry point</p>
+<p>This means external teams can ship domain-specific check packages without forking the core runner.</p>
 <h2 id="deployment-model">Deployment Model<a class="headerlink" href="#deployment-model" title="Permanent link">&para;</a></h2>
-<p>The framework runs as a local CLI tool — no servers required for the core audit workflow.</p>
+<p>The framework runs as a local CLI tool — no servers, no persistent state.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip install payment-audit-runner     # or pipx install for isolated install
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>audit-runner --help
+</code></pre></div>
 <ul>
-<li><strong>Build</strong>: <code>npm run build</code> (or <code>make build</code>) — compiles TypeScript checks to JavaScript (M3)</li>
-<li><strong>Test</strong>: <code>npm test</code> — runs check unit tests against mock system responses</li>
-<li><strong>Distribute</strong>: published as an npm package or Docker image for teams without Node.js</li>
+<li><strong>Test</strong>: <code>pytest checks/ runner/ -q</code> — runs check unit tests against mock system responses</li>
+<li><strong>Distribute</strong>: <code>pyproject.toml</code>-based package, published to PyPI; Docker image available via ghcr.io for teams that want a pre-configured environment</li>
+<li><strong>Docs</strong>: <code>mkdocs build</code> or <code>mkdocs serve</code> for local preview; auto-deployed to GitHub Pages on push to <code>main</code></li>
 </ul>
 <blockquote>
-<p>Technology decisions are documented in <code>docs/TECH-STACK.md</code> (pending PAY-5).</p>
+<p>Technology decisions are documented in <a href="../TECH-STACK/"><code>docs/TECH-STACK.md</code></a>.</p>
 </blockquote>
+<h2 id="directory-layout">Directory Layout<a class="headerlink" href="#directory-layout" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>PaymentGatewayAuditFramework/
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── README.md
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├── ROADMAP.md
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>├── mkdocs.yml                      # Docs site config
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>├── pyproject.toml                  # Package definition (M3)
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>├── docs/
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│   ├── ARCHITECTURE.md             # This file
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│   ├── TECH-STACK.md               # Technology decisions (PAY-12)
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│   ├── CONTRIBUTING.md
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│   ├── THREAT-MODEL.md
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>│   └── SECURITY-REVIEW.md          # (M2 — Security Engineer)
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>├── methodology/
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>│   ├── index.md
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>│   ├── architecture/checklist.md   # M2
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>│   ├── competitive/checklist.md    # M2
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>│   ├── merchant/checklist.md       # M2
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>│   ├── white-label/checklist.md    # M2
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│   └── security/checklist.md       # M2
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>├── checks/                         # M3 — machine-executable check modules
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│   ├── __init__.py
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>│   ├── architecture/
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>│   ├── competitive/
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>│   ├── merchant/
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>│   ├── white_label/
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>│   └── security/
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>├── runner/                         # M3 — CLI and orchestration
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>│   ├── __init__.py
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>│   ├── cli.py                      # Typer app — `audit run`, `audit report`
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>│   ├── registry.py                 # CheckRegistry, @check decorator
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>│   ├── target.py                   # AuditTarget — wraps the system under audit
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>│   ├── runner.py                   # Executes checks, aggregates findings
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>│   └── report.py                   # Renders JSON, Markdown, HTML outputs
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>├── templates/                      # Jinja2 report templates
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>│   ├── executive-summary.md.j2
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>│   ├── gap-analysis.md.j2
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>│   └── security-score.md.j2
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>├── reference-architectures/        # M4
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>│   ├── stripe-like/
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>│   ├── adyen-like/
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>│   ├── in-house-acquirer/
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>│   ├── psp-aggregator/
+<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>│   └── embedded-finance/
+<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>└── .github/workflows/
+<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>    ├── ci.yml                      # Lint, type check, tests
+<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a>    └── docs-deploy.yml             # MkDocs → GitHub Pages
+</code></pre></div>
 <h2 id="key-decisions">Key Decisions<a class="headerlink" href="#key-decisions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -922,9 +1014,19 @@
 <td>Allows manual audits before CLI is ready; catches methodology gaps early</td>
 </tr>
 <tr>
+<td>Python as core language</td>
+<td>Security tooling ecosystem</td>
+<td>Industry standard; check contributors need zero ramp-up</td>
+</tr>
+<tr>
 <td>Per-domain modularity</td>
 <td>Each domain is an independent module</td>
 <td>Teams can run a single domain (e.g., security only) without touching others</td>
+</tr>
+<tr>
+<td>Plugin extensibility via entry points</td>
+<td>Third-party check packages</td>
+<td>Teams can ship private checks without forking the framework</td>
 </tr>
 <tr>
 <td>PCI DSS v4.0 as primary standard</td>
@@ -936,11 +1038,15 @@
 <td>Gap analysis requires a comparison point</td>
 <td>Corefy and PayAdmit are established market leaders, providing a realistic benchmark</td>
 </tr>
+<tr>
+<td>No persistent state / no database</td>
+<td>Audit is a point-in-time assessment</td>
+<td>Keeps the tool simple; findings are files, not records</td>
+</tr>
 </tbody>
 </table>
 <hr />
-<p><em>Architecture subject to revision pending tech stack decisions (PAY-5) and system architecture design (PAY-6).</em>
-<em>Last updated: 2026-04-16 by Technical Writer.</em></p>
+<p><em>Last updated: 2026-04-16 by Engineer (<a href="/PAY/issues/PAY-10">PAY-10</a>).</em></p>
 
 
 
