@@ -1,0 +1,971 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open audit methodology for payment platform engineering teams — PCI DSS v4.0, OWASP Payment Security, and reference architectures.">
+      
+      
+      
+        <link rel="canonical" href="https://likesoftio.github.io/payment-gateway-audit-framework/CONTRIBUTING/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Contributing Guide - Payment Gateway Audit Framework</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#contributing-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Payment Gateway Audit Framework" class="md-header__button md-logo" aria-label="Payment Gateway Audit Framework" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Payment Gateway Audit Framework
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Contributing Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/likesoftio/payment-gateway-audit-framework" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    likesoftio/payment-gateway-audit-framework
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../methodology/index.md" class="md-tabs__link">
+          
+  
+  
+  Methodology
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/TECH-STACK.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Tech Stack
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/ARCHITECTURE.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Payment Gateway Audit Framework" class="md-nav__button md-logo" aria-label="Payment Gateway Audit Framework" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Payment Gateway Audit Framework
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/likesoftio/payment-gateway-audit-framework" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    likesoftio/payment-gateway-audit-framework
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methodology
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Methodology
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methodology/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/TECH-STACK.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/ARCHITECTURE.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#who-contributes-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who Contributes What
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commit-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commit Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-request-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Request Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pull Request Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-open-a-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to open a PR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-a-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening a PR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#review-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merge
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checklist-quality-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checklist Quality Standards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-architecture-contributions-m4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference Architecture Contributions (M4)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation Standards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="contributing-guide">Contributing Guide<a class="headerlink" href="#contributing-guide" title="Permanent link">&para;</a></h1>
+<p>Welcome to the Payment Gateway Audit Framework. This guide covers how to contribute methodology, tooling, and reference content.</p>
+<h2 id="who-contributes-what">Who Contributes What<a class="headerlink" href="#who-contributes-what" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Primary contributions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Engineer</td>
+<td>Automated checks (<code>checks/</code>), audit runner CLI (<code>runner/</code>)</td>
+</tr>
+<tr>
+<td>Security Engineer</td>
+<td>Security domain checklists, threat model, OWASP/PCI DSS mappings</td>
+</tr>
+<tr>
+<td>Technical Writer</td>
+<td>Documentation, README, guides, API reference</td>
+</tr>
+<tr>
+<td>Product Owner</td>
+<td>Roadmap, backlog grooming, acceptance criteria</td>
+</tr>
+<tr>
+<td>Code Reviewer</td>
+<td>Code review for all PRs touching <code>checks/</code> and <code>runner/</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-setup">Development Setup<a class="headerlink" href="#development-setup" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>The automation layer (M3) is not yet implemented. Setup instructions for the runner CLI will be added when it ships.</p>
+</blockquote>
+<p>For methodology and documentation contributions, no special tooling is required:</p>
+<ol>
+<li>Clone or pull the repository</li>
+<li>Open <code>methodology/&lt;domain&gt;/checklist.md</code> for the domain you're working on</li>
+<li>Make your changes</li>
+<li>Follow the commit and PR conventions below</li>
+</ol>
+<h2 id="repository-layout">Repository Layout<a class="headerlink" href="#repository-layout" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>PaymentGatewayAuditFramework/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── README.md
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── docs/
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── ARCHITECTURE.md       # Framework architecture
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── CONTRIBUTING.md       # This file
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   ├── TECH-STACK.md         # Technology decisions (pending PAY-5)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── THREAT-MODEL.md       # Threat model (pending PAY-9)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   └── SECURITY-REVIEW.md   # Security review (pending PAY-10)
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>├── methodology/
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── architecture/         # Architecture &amp; Scalability checklist
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   ├── competitive/          # Competitive Functional Analysis checklist
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── merchant/             # Merchant Operational Excellence checklist
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── white-label/          # White Label Model Readiness checklist
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   └── security/             # Security &amp; Compliance checklist
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>├── checks/                   # Machine-executable audit scripts (M3)
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>├── reference-architectures/  # Payment gateway patterns (M4)
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>└── templates/                # Deliverable templates
+</code></pre></div>
+<h2 id="commit-conventions">Commit Conventions<a class="headerlink" href="#commit-conventions" title="Permanent link">&para;</a></h2>
+<p>Use <a href="https://www.conventionalcommits.org/">Conventional Commits</a> format:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;type&gt;: &lt;short description&gt;
+</code></pre></div>
+<p>Types: <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>chore</code>, <code>refactor</code>, <code>test</code>, <code>perf</code></p>
+<p>Examples:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docs: add PCI DSS v4.0 requirement mapping to security checklist
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>feat: add automated JWT algorithm confusion check
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>fix: correct TPS capacity threshold in architecture checklist
+</code></pre></div></p>
+<p>Rules:
+- Lowercase after colon
+- No period at end
+- Under 72 characters
+- Reference Paperclip issue ID in commit body when applicable (e.g., <code>PAY-12</code>)</p>
+<h2 id="pull-request-workflow">Pull Request Workflow<a class="headerlink" href="#pull-request-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="when-to-open-a-pr">When to open a PR<a class="headerlink" href="#when-to-open-a-pr" title="Permanent link">&para;</a></h3>
+<p><strong>Requires a PR</strong> (via branch + review):
+- New audit checks (<code>checks/</code>)
+- Changes to the audit runner CLI (<code>runner/</code>)
+- New or significantly revised methodology checklists
+- New reference architecture documentation</p>
+<p><strong>Direct-to-main OK</strong>:
+- Typos and minor wording fixes
+- Comment-only changes
+- Minor doc fixes (must reference issue in commit body)</p>
+<h3 id="opening-a-pr">Opening a PR<a class="headerlink" href="#opening-a-pr" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Branch from <code>main</code>: <code>pay-&lt;N&gt;/&lt;short-description&gt;</code> (e.g., <code>pay-15/add-tokenization-checks</code>)</li>
+<li>Push your branch and open a PR with this template:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gu">## What changed</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>&lt;Brief description&gt;
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="gu">## Why</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>&lt;Motivation and context&gt;
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="gu">## How to test</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>&lt;Steps to verify — for checks, include a test command&gt;
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="gu">## Related</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>Closes PAY-N
+</code></pre></div>
+<ol>
+<li>Set the originating Paperclip issue to <code>in_review</code></li>
+<li>@-mention @Code Reviewer and @Product Owner on the issue with the PR link</li>
+</ol>
+<h3 id="review-requirements">Review requirements<a class="headerlink" href="#review-requirements" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Code Reviewer</strong> must approve: correctness, security, code style, simplicity</li>
+<li><strong>Product Owner</strong> must approve: intent match, scope, acceptance criteria</li>
+<li>CI must pass (when configured)</li>
+<li>No force pushes to main</li>
+</ul>
+<h3 id="merge">Merge<a class="headerlink" href="#merge" title="Permanent link">&para;</a></h3>
+<p>The PR author merges after all approvals: <code>gh pr merge &lt;number&gt; --merge</code></p>
+<h2 id="checklist-quality-standards">Checklist Quality Standards<a class="headerlink" href="#checklist-quality-standards" title="Permanent link">&para;</a></h2>
+<p>When authoring or updating methodology checklists:</p>
+<ul>
+<li>Each item must be actionable (starts with a verb: "Verify", "Check", "Confirm")</li>
+<li>Each item must map to at least one PCI DSS v4.0 requirement or OWASP standard</li>
+<li>Each item must have a severity: <code>Critical</code>, <code>High</code>, <code>Medium</code>, or <code>Low</code></li>
+<li>Items must be testable — include the test method (automated / manual / interview)</li>
+</ul>
+<p>Example checklist item format:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gu">### CHK-SEC-001: Verify JWT algorithm pinning</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="gs">**Severity**</span>: Critical
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="gs">**Standards**</span>: PCI DSS v4.0 Req 6.3, OWASP ASVS 3.5.3
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="gs">**Test method**</span>: Automated
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="gs">**Description**</span>: Confirm the API rejects tokens signed with <span class="sb">`alg: none`</span> or an unexpected algorithm.
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="gs">**Check**</span>: <span class="sb">`checks/security/jwt-algorithm-check.js`</span>
+</code></pre></div></p>
+<h2 id="reference-architecture-contributions-m4">Reference Architecture Contributions (M4)<a class="headerlink" href="#reference-architecture-contributions-m4" title="Permanent link">&para;</a></h2>
+<p>Each reference architecture document must include:</p>
+<ol>
+<li><strong>System overview</strong> — what this pattern is and when to use it</li>
+<li><strong>Architecture diagram</strong> — ASCII or linked image</li>
+<li><strong>Threat surface map</strong> — STRIDE-based, covering the payment flow</li>
+<li><strong>Pre-filled audit checklist</strong> — which methodology items apply and any pattern-specific items</li>
+<li><strong>PCI DSS applicability notes</strong> — which requirements are hardest to satisfy for this pattern</li>
+</ol>
+<h2 id="documentation-standards">Documentation Standards<a class="headerlink" href="#documentation-standards" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Write for a senior engineer who is not a payment domain expert.</li>
+<li>Define payment-specific terms on first use (e.g., "cascading — the process of automatically retrying a declined transaction through a different gateway").</li>
+<li>Keep a single source of truth per topic. Link, don't copy.</li>
+<li>File paths in docs should be relative to the repository root.</li>
+</ul>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<ul>
+<li>For questions about scope or priorities, check the <a href="/">Paperclip issue tracker</a>.</li>
+<li>For security-related questions, @-mention @Security Engineer on the relevant issue.</li>
+<li>For methodology questions, reference <a href="https://www.pcisecuritystandards.org/document_library/">PCI DSS v4.0</a> or <a href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS</a>.</li>
+</ul>
+<hr />
+<p><em>Last updated: 2026-04-16 by Technical Writer.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

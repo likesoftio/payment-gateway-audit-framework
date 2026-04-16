@@ -1,0 +1,1842 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open audit methodology for payment platform engineering teams — PCI DSS v4.0, OWASP Payment Security, and reference architectures.">
+      
+      
+      
+        <link rel="canonical" href="https://likesoftio.github.io/payment-gateway-audit-framework/THREAT-MODEL/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Threat Model: Payment Platform Audit Framework - Payment Gateway Audit Framework</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#threat-model-payment-platform-audit-framework" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Payment Gateway Audit Framework" class="md-header__button md-logo" aria-label="Payment Gateway Audit Framework" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Payment Gateway Audit Framework
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Threat Model: Payment Platform Audit Framework
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/likesoftio/payment-gateway-audit-framework" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    likesoftio/payment-gateway-audit-framework
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../methodology/index.md" class="md-tabs__link">
+          
+  
+  
+  Methodology
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/TECH-STACK.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Tech Stack
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/ARCHITECTURE.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../docs/CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Payment Gateway Audit Framework" class="md-nav__button md-logo" aria-label="Payment Gateway Audit Framework" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Payment Gateway Audit Framework
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/likesoftio/payment-gateway-audit-framework" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    likesoftio/payment-gateway-audit-framework
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methodology
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Methodology
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methodology/index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/TECH-STACK.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech Stack
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/ARCHITECTURE.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-system-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. System Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. System Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-key-components-and-trust-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Key Components and Trust Boundaries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-data-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Data Flows
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-attack-surface-enumeration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Attack Surface Enumeration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-stride-threat-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. STRIDE Threat Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. STRIDE Threat Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-authentication-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Authentication Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tokenization-subsystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Tokenization Subsystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-key-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Key Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-data-in-transit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Data-in-Transit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-logging-and-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Logging and Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-incident-response-surfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 Incident Response Surfaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-multi-tenancy-and-merchant-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 Multi-Tenancy and Merchant Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-risk-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Risk Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-top-priority-mitigations-critical-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Top Priority Mitigations (Critical Only)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-audit-checklist-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Audit Checklist Mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-follow-up-issues-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Follow-up Issues Required
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-revision-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Revision History
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="threat-model-payment-platform-audit-framework">Threat Model: Payment Platform Audit Framework<a class="headerlink" href="#threat-model-payment-platform-audit-framework" title="Permanent link">&para;</a></h1>
+<p><strong>Version:</strong> 1.0<br />
+<strong>Date:</strong> 2026-04-16<br />
+<strong>Author:</strong> Security Engineer<br />
+<strong>Methodology:</strong> STRIDE<br />
+<strong>Status:</strong> Initial draft — no production system exists yet. This model covers the <em>target audit domain</em>: payment gateways and platforms that this framework will assess. It serves as the reference threat surface for building audit checklists, automated checks, and reference architectures.</p>
+<hr />
+<h2 id="1-system-overview">1. System Overview<a class="headerlink" href="#1-system-overview" title="Permanent link">&para;</a></h2>
+<h3 id="11-scope">1.1 Scope<a class="headerlink" href="#11-scope" title="Permanent link">&para;</a></h3>
+<p>This threat model covers the canonical <strong>payment gateway platform</strong> that this audit framework is designed to evaluate. The audit framework itself is a collection of documentation, checklists, and tooling — not a live payment system — but the threat model must reflect the real attack surface of payment platforms so that audit artifacts are threat-informed.</p>
+<p><strong>In scope:</strong></p>
+<ul>
+<li>Payment gateway core engine (transaction processing, routing, cascading)</li>
+<li>Tokenization and card vault subsystem</li>
+<li>Key management infrastructure (HSM, KMS)</li>
+<li>Merchant-facing APIs and portal</li>
+<li>Authentication and authorization layer (JWT, OAuth 2.0)</li>
+<li>Webhook and callback delivery</li>
+<li>Logging, monitoring, and audit trail</li>
+<li>Incident response interfaces</li>
+<li>Multi-tenancy and white-label isolation layer</li>
+</ul>
+<p><strong>Out of scope:</strong></p>
+<ul>
+<li>Card-scheme networks (Visa/Mastercard infrastructure)</li>
+<li>Issuing bank internal systems</li>
+<li>Physical HSM supply chain</li>
+<li>End-user browser/device security</li>
+</ul>
+<hr />
+<h3 id="12-key-components-and-trust-boundaries">1.2 Key Components and Trust Boundaries<a class="headerlink" href="#12-key-components-and-trust-boundaries" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌───────────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│  EXTERNAL TRUST ZONE                                                  │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────────────┐  │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  │  Merchant    │   │  Cardholder  │   │  Acquirer / Card Scheme  │  │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  │  Application │   │  Browser     │   │  (Visa, MC, banks)       │  │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  └──────┬───────┘   └──────┬───────┘   └───────────┬──────────────┘  │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>└─────────┼──────────────────┼───────────────────────┼─────────────────┘
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>          │ HTTPS/API        │ HTTPS                 │ ISO 8583 / REST
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          ▼                  ▼                       ▼
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>┌───────────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  DMZ / API GATEWAY ZONE                                               │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│  ┌──────────────────────────────────────────────────────────────────┐ │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│  │  API Gateway (rate-limiting, TLS termination, WAF)               │ │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│  └──────────────────┬─────────────────────────────────────────────┘  │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>└─────────────────────┼──────────────────────────────────────────────── ┘
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                      │ mTLS / internal JWT
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                      ▼
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>┌───────────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│  APPLICATION TRUST ZONE (PCI DSS CDE — Cardholder Data Environment)  │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────────────────┐ │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│  │  Auth Service│  │ Routing      │  │  Tokenization / Card Vault  │ │
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│  │  (JWT/OAuth) │  │ Engine       │  │  (HSM-backed)               │ │
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│  └──────┬───────┘  └──────┬───────┘  └──────────────┬──────────────┘ │
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│         │                 │                          │                │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│  ┌──────▼───────────────────────────────────────────▼──────────────┐ │
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│  │  Core Transaction Engine                                         │ │
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│  └──────────────────────────────┬───────────────────────────────────┘ │
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│                                 │                                     │
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│  ┌──────────────┐  ┌────────────▼───────┐  ┌───────────────────────┐ │
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│  │  Merchant    │  │  Connector Layer   │  │  Reconciliation &amp;     │ │
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│  │  Portal      │  │  (acquirer adapters│  │  Dispute Module       │ │
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│  └──────────────┘  └────────────────────┘  └───────────────────────┘ │
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>└───────────────────────────────────────────────────────────────────────┘
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>                      │ encrypted channel (TLS + signing)
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>                      ▼
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>┌───────────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│  DATA TRUST ZONE                                                      │
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────────┐  │
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│  │  Primary DB  │  │  Cache Layer │  │  Key Management (HSM/KMS)  │  │
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│  │  (encrypted) │  │  (Redis)     │  │                            │  │
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>│  └──────────────┘  └──────────────┘  └────────────────────────────┘  │
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>└───────────────────────────────────────────────────────────────────────┘
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>                      │
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>                      ▼
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>┌───────────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>│  OBSERVABILITY ZONE                                                   │
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────────┐  │
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>│  │  Audit Log   │  │  SIEM /      │  │  Incident Response         │  │
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>│  │  (append-    │  │  Monitoring  │  │  Interface                 │  │
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>│  │   only)      │  │              │  │                            │  │
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>│  └──────────────┘  └──────────────┘  └────────────────────────────┘  │
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>└───────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Trust boundary crossings (attack surface concentrated here):</strong>
+1. External → DMZ/API Gateway: merchant API calls, cardholder payment submissions
+2. DMZ → Application Zone: internal service calls (must use mTLS or signed tokens)
+3. Application → Data Zone: database queries, cache reads/writes, KMS requests
+4. Application → Observability Zone: log writes, metric emissions</p>
+<hr />
+<h2 id="2-data-flows">2. Data Flows<a class="headerlink" href="#2-data-flows" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Flow ID</th>
+<th>Source</th>
+<th>Destination</th>
+<th>Data Carried</th>
+<th>Classification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DF-1</td>
+<td>Merchant App</td>
+<td>API Gateway</td>
+<td>Auth token + payment request</td>
+<td>Sensitive</td>
+</tr>
+<tr>
+<td>DF-2</td>
+<td>Cardholder Browser</td>
+<td>API Gateway</td>
+<td>PAN, CVV, expiry (PCI-scoped)</td>
+<td>Cardholder Data (CHD)</td>
+</tr>
+<tr>
+<td>DF-3</td>
+<td>API Gateway</td>
+<td>Auth Service</td>
+<td>Credentials / JWT</td>
+<td>Sensitive</td>
+</tr>
+<tr>
+<td>DF-4</td>
+<td>Auth Service</td>
+<td>Core Engine</td>
+<td>Signed authorization claim</td>
+<td>Internal</td>
+</tr>
+<tr>
+<td>DF-5</td>
+<td>Core Engine</td>
+<td>Routing Engine</td>
+<td>Transaction params (no PAN)</td>
+<td>Internal</td>
+</tr>
+<tr>
+<td>DF-6</td>
+<td>Core Engine</td>
+<td>Tokenization Vault</td>
+<td>PAN + context</td>
+<td>CHD</td>
+</tr>
+<tr>
+<td>DF-7</td>
+<td>Tokenization Vault</td>
+<td>KMS</td>
+<td>Encryption key request</td>
+<td>Highly Sensitive</td>
+</tr>
+<tr>
+<td>DF-8</td>
+<td>Routing Engine</td>
+<td>Connector Layer</td>
+<td>Tokenized transaction</td>
+<td>Internal</td>
+</tr>
+<tr>
+<td>DF-9</td>
+<td>Connector Layer</td>
+<td>Acquirer</td>
+<td>ISO 8583 / REST (CHD or token)</td>
+<td>CHD / Regulated</td>
+</tr>
+<tr>
+<td>DF-10</td>
+<td>Core Engine</td>
+<td>DB</td>
+<td>Transaction record (masked CHD)</td>
+<td>Sensitive</td>
+</tr>
+<tr>
+<td>DF-11</td>
+<td>Core Engine</td>
+<td>Cache</td>
+<td>Session state, routing cache</td>
+<td>Sensitive</td>
+</tr>
+<tr>
+<td>DF-12</td>
+<td>Core Engine</td>
+<td>Audit Log</td>
+<td>Sanitized transaction log</td>
+<td>Sensitive</td>
+</tr>
+<tr>
+<td>DF-13</td>
+<td>Webhook Service</td>
+<td>Merchant App</td>
+<td>Event notification + HMAC sig</td>
+<td>Sensitive</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-attack-surface-enumeration">3. Attack Surface Enumeration<a class="headerlink" href="#3-attack-surface-enumeration" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Surface ID</th>
+<th>Surface</th>
+<th>Protocol</th>
+<th>Exposure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AS-1</td>
+<td>Merchant REST API</td>
+<td>HTTPS</td>
+<td>External</td>
+</tr>
+<tr>
+<td>AS-2</td>
+<td>Cardholder payment form / 3DS redirect</td>
+<td>HTTPS</td>
+<td>External (high-value)</td>
+</tr>
+<tr>
+<td>AS-3</td>
+<td>Admin / Merchant Portal</td>
+<td>HTTPS + Auth</td>
+<td>External (authenticated)</td>
+</tr>
+<tr>
+<td>AS-4</td>
+<td>Webhook endpoints (merchant-side)</td>
+<td>HTTPS outbound</td>
+<td>Internal → External</td>
+</tr>
+<tr>
+<td>AS-5</td>
+<td>Acquirer connector endpoints</td>
+<td>HTTPS/ISO 8583</td>
+<td>External (partner)</td>
+</tr>
+<tr>
+<td>AS-6</td>
+<td>Internal service-to-service APIs</td>
+<td>mTLS / gRPC</td>
+<td>Internal</td>
+</tr>
+<tr>
+<td>AS-7</td>
+<td>KMS / HSM management interface</td>
+<td>TLS + hardware auth</td>
+<td>Internal (restricted)</td>
+</tr>
+<tr>
+<td>AS-8</td>
+<td>Database and cache layer</td>
+<td>TCP (encrypted)</td>
+<td>Internal</td>
+</tr>
+<tr>
+<td>AS-9</td>
+<td>Log aggregation pipeline</td>
+<td>Syslog / Kafka</td>
+<td>Internal</td>
+</tr>
+<tr>
+<td>AS-10</td>
+<td>CI/CD pipeline and secrets manager</td>
+<td>HTTPS</td>
+<td>DevOps (privileged)</td>
+</tr>
+<tr>
+<td>AS-11</td>
+<td>Incident response tooling</td>
+<td>HTTPS</td>
+<td>Internal + On-call</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-stride-threat-analysis">4. STRIDE Threat Analysis<a class="headerlink" href="#4-stride-threat-analysis" title="Permanent link">&para;</a></h2>
+<h3 id="41-authentication-flows">4.1 Authentication Flows<a class="headerlink" href="#41-authentication-flows" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> Auth Service, JWT issuance, OAuth 2.0 flows, session management</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-A1</td>
+<td><strong>Spoofing</strong></td>
+<td>Forged or stolen JWT used to impersonate merchant/admin</td>
+<td>High</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Short JWT TTL (≤15 min), RS256/ES256 signing (no HS256 with shared secret), token binding, refresh token rotation</td>
+</tr>
+<tr>
+<td>T-A2</td>
+<td><strong>Spoofing</strong></td>
+<td>OAuth authorization code interception (redirect URI mismatch)</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Strict redirect URI allowlist, PKCE mandatory for public clients</td>
+</tr>
+<tr>
+<td>T-A3</td>
+<td><strong>Tampering</strong></td>
+<td>JWT payload modification (none-algorithm attack, weak HS256 key)</td>
+<td>Low</td>
+<td>Critical</td>
+<td><strong>High</strong></td>
+<td>Reject "alg: none"; enforce asymmetric signing; validate <code>alg</code> header server-side</td>
+</tr>
+<tr>
+<td>T-A4</td>
+<td><strong>Repudiation</strong></td>
+<td>No audit trail of authentication events (logins, token grants, revocations)</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Immutable auth event log; include IP, user agent, timestamp, outcome</td>
+</tr>
+<tr>
+<td>T-A5</td>
+<td><strong>Information Disclosure</strong></td>
+<td>JWT contains PAN or other CHD in claims</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Audit all JWT claims; forbid CHD in tokens; use opaque references</td>
+</tr>
+<tr>
+<td>T-A6</td>
+<td><strong>Denial of Service</strong></td>
+<td>Brute-force or credential stuffing against auth endpoints</td>
+<td>High</td>
+<td>High</td>
+<td><strong>Critical</strong></td>
+<td>Rate limiting per IP and per account; CAPTCHA on repeated failures; account lockout with alerting</td>
+</tr>
+<tr>
+<td>T-A7</td>
+<td><strong>Elevation of Privilege</strong></td>
+<td>Privilege escalation via JWT role claim manipulation</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Server-side RBAC; never trust client-supplied roles without re-validation</td>
+</tr>
+<tr>
+<td>T-A8</td>
+<td><strong>Spoofing</strong></td>
+<td>Weak or reused API keys for merchant authentication</td>
+<td>High</td>
+<td>High</td>
+<td><strong>Critical</strong></td>
+<td>Cryptographically random keys (≥256 bits); per-merchant key rotation; key scoping</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-tokenization-subsystem">4.2 Tokenization Subsystem<a class="headerlink" href="#42-tokenization-subsystem" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> Card Vault, token issuance, de-tokenization, HSM interface</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-TK1</td>
+<td><strong>Spoofing</strong></td>
+<td>Unauthorized de-tokenization request (internal service impersonation)</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>mTLS on all vault endpoints; service identity certificates; de-tokenization audit log</td>
+</tr>
+<tr>
+<td>T-TK2</td>
+<td><strong>Tampering</strong></td>
+<td>Token-to-PAN mapping table manipulation</td>
+<td>Low</td>
+<td>Critical</td>
+<td><strong>High</strong></td>
+<td>DB integrity controls; append-only token records; HSM-signed mappings where feasible</td>
+</tr>
+<tr>
+<td>T-TK3</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Token leaks PAN information (format-preserving tokens that encode card data)</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Use random/opaque tokens, not format-preserving encoding; token must not be derivable to PAN</td>
+</tr>
+<tr>
+<td>T-TK4</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Vault backup exposes unencrypted CHD</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Encrypt backups with separate KMS key; test restore procedures</td>
+</tr>
+<tr>
+<td>T-TK5</td>
+<td><strong>Elevation of Privilege</strong></td>
+<td>Overly broad token scope allows cross-merchant de-tokenization</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Tenant-scoped tokens; strict tenant isolation enforced at vault layer</td>
+</tr>
+<tr>
+<td>T-TK6</td>
+<td><strong>Denial of Service</strong></td>
+<td>Vault service overwhelmed by high-volume de-tokenization requests</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Rate limiting per service; circuit breakers; async token resolution where latency permits</td>
+</tr>
+<tr>
+<td>T-TK7</td>
+<td><strong>Repudiation</strong></td>
+<td>No record of which system de-tokenized a given PAN</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Immutable de-tokenization log: requester, timestamp, token ID, purpose code</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-key-management">4.3 Key Management<a class="headerlink" href="#43-key-management" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> KMS, HSM, encryption key lifecycle</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-KM1</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Key exfiltration from software KMS (plaintext keys in memory/disk)</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>HSM for root keys; FIPS 140-2 Level 3 minimum; keys never leave HSM in plaintext</td>
+</tr>
+<tr>
+<td>T-KM2</td>
+<td><strong>Tampering</strong></td>
+<td>Key rotation failure leaves expired keys in active use</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Automated key rotation with dual-control; rotation events logged and alerted</td>
+</tr>
+<tr>
+<td>T-KM3</td>
+<td><strong>Elevation of Privilege</strong></td>
+<td>Unrestricted KMS API allows any service to decrypt any key</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Key usage policies: per-purpose encryption (DEK, KEK, signing key segregation); access scoped by service identity</td>
+</tr>
+<tr>
+<td>T-KM4</td>
+<td><strong>Spoofing</strong></td>
+<td>KMS API impersonation by compromised internal service</td>
+<td>Low</td>
+<td>Critical</td>
+<td><strong>High</strong></td>
+<td>mTLS + IAM policies on KMS endpoint; out-of-band key ceremony for root key generation</td>
+</tr>
+<tr>
+<td>T-KM5</td>
+<td><strong>Denial of Service</strong></td>
+<td>KMS unavailability causes total transaction processing failure</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>KMS HA design (multi-AZ); local key caching with short TTL for DEKs; graceful degradation plan</td>
+</tr>
+<tr>
+<td>T-KM6</td>
+<td><strong>Repudiation</strong></td>
+<td>No audit trail of key usage (who used which key to decrypt what)</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>KMS access logs with service identity; log forwarded to SIEM</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-data-in-transit">4.4 Data-in-Transit<a class="headerlink" href="#44-data-in-transit" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> TLS configuration, certificate management, internal service mesh</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-DT1</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Weak TLS configuration allows MITM or downgrade attack</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>TLS 1.2 minimum (TLS 1.3 preferred); disable SSLv3, TLS 1.0, RC4, NULL ciphers; HSTS enforced</td>
+</tr>
+<tr>
+<td>T-DT2</td>
+<td><strong>Tampering</strong></td>
+<td>Unsigned webhook payloads allow replay or injection</td>
+<td>High</td>
+<td>High</td>
+<td><strong>Critical</strong></td>
+<td>HMAC-SHA256 signature on all webhook events; include timestamp; verify on merchant side</td>
+</tr>
+<tr>
+<td>T-DT3</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Internal service traffic unencrypted (east-west)</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>mTLS on all internal APIs; service mesh with automatic certificate rotation</td>
+</tr>
+<tr>
+<td>T-DT4</td>
+<td><strong>Spoofing</strong></td>
+<td>Expired or self-signed certificates accepted by internal services</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Certificate pinning or SPIFFE/SPIRE for service identity; automated cert renewal (ACME/cert-manager)</td>
+</tr>
+<tr>
+<td>T-DT5</td>
+<td><strong>Repudiation</strong></td>
+<td>Acquirer communication lacks message signing</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Sign acquirer API requests with platform key; verify acquirer responses; retain request/response pairs</td>
+</tr>
+<tr>
+<td>T-DT6</td>
+<td><strong>Denial of Service</strong></td>
+<td>TLS handshake flood exhausts connection pool</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Rate limiting at load balancer; connection throttling; DDoS protection upstream</td>
+</tr>
+</tbody>
+</table>
+<h3 id="45-logging-and-monitoring">4.5 Logging and Monitoring<a class="headerlink" href="#45-logging-and-monitoring" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> Audit log pipeline, SIEM, log masking controls</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-LM1</td>
+<td><strong>Information Disclosure</strong></td>
+<td>PAN, CVV, or full card data logged in plaintext</td>
+<td>High</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Mandatory data masking before log write: PAN → first6+last4 only; CVV must never be logged; automated log scanning to detect leaks</td>
+</tr>
+<tr>
+<td>T-LM2</td>
+<td><strong>Tampering</strong></td>
+<td>Log records modified or deleted to cover tracks</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Append-only log storage; write once/read many (WORM); cryptographic log chaining (hash chains or signed segments)</td>
+</tr>
+<tr>
+<td>T-LM3</td>
+<td><strong>Repudiation</strong></td>
+<td>Insufficient logging means breach cannot be reconstructed</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Log all: auth events, transaction lifecycle, admin actions, config changes, key usage; retain for PCI DSS minimum 12 months</td>
+</tr>
+<tr>
+<td>T-LM4</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Log aggregation pipeline transmits sensitive data unencrypted</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Encrypt log streams (TLS); restrict access to log aggregator; apply masking before shipping</td>
+</tr>
+<tr>
+<td>T-LM5</td>
+<td><strong>Denial of Service</strong></td>
+<td>Log flood (log injection) overwhelms SIEM and masks real events</td>
+<td>Medium</td>
+<td>Medium</td>
+<td><strong>Medium</strong></td>
+<td>Rate limit log ingestion per source; alert on abnormal log volume; separate audit log from application log</td>
+</tr>
+<tr>
+<td>T-LM6</td>
+<td><strong>Elevation of Privilege</strong></td>
+<td>Excessive log data enables correlation attacks on cardholder behavior</td>
+<td>Low</td>
+<td>High</td>
+<td><strong>Medium</strong></td>
+<td>Minimize CHD in logs to what is strictly necessary; anonymize where possible; data retention minimization</td>
+</tr>
+</tbody>
+</table>
+<h3 id="46-incident-response-surfaces">4.6 Incident Response Surfaces<a class="headerlink" href="#46-incident-response-surfaces" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> Incident response tooling, admin interfaces, break-glass access</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-IR1</td>
+<td><strong>Elevation of Privilege</strong></td>
+<td>Break-glass admin access used outside incident context</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Just-in-time (JIT) privileged access; MFA required; automated session recording; all break-glass events alerted to security team</td>
+</tr>
+<tr>
+<td>T-IR2</td>
+<td><strong>Spoofing</strong></td>
+<td>Attacker uses incident response credentials to gain persistent access</td>
+<td>Low</td>
+<td>Critical</td>
+<td><strong>High</strong></td>
+<td>Temporary credentials with short TTL for break-glass; credential rotation after each use; dual approval for production access</td>
+</tr>
+<tr>
+<td>T-IR3</td>
+<td><strong>Repudiation</strong></td>
+<td>No record of actions taken during incident response</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Immutable session recording (terminal/API session replay); mandatory incident ticket linking to all admin actions</td>
+</tr>
+<tr>
+<td>T-IR4</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Incident communication channels expose CHD or security findings</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>Use encrypted channels (Signal, private Slack with DLP); restrict incident channel membership; sanitize reports before sharing</td>
+</tr>
+<tr>
+<td>T-IR5</td>
+<td><strong>Tampering</strong></td>
+<td>Incident playbooks can be modified to weaken response</td>
+<td>Low</td>
+<td>High</td>
+<td><strong>Medium</strong></td>
+<td>Version-control playbooks with signed commits; access-controlled to security team</td>
+</tr>
+<tr>
+<td>T-IR6</td>
+<td><strong>Denial of Service</strong></td>
+<td>Incident response tooling unavailable during an actual incident</td>
+<td>Medium</td>
+<td>High</td>
+<td><strong>High</strong></td>
+<td>IR tooling in separate, isolated infrastructure from production; offline runbooks maintained</td>
+</tr>
+</tbody>
+</table>
+<h3 id="47-multi-tenancy-and-merchant-isolation">4.7 Multi-Tenancy and Merchant Isolation<a class="headerlink" href="#47-multi-tenancy-and-merchant-isolation" title="Permanent link">&para;</a></h3>
+<p><strong>Component:</strong> Tenant isolation layer, RBAC, white-label configuration</p>
+<table>
+<thead>
+<tr>
+<th>Threat ID</th>
+<th>Category</th>
+<th>Threat</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T-MT1</td>
+<td><strong>Information Disclosure</strong></td>
+<td>Cross-tenant data leakage via shared cache or DB query without tenant filter</td>
+<td>High</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Tenant ID enforced at ORM/query level; row-level security in DB; cache key namespacing by tenant</td>
+</tr>
+<tr>
+<td>T-MT2</td>
+<td><strong>Elevation of Privilege</strong></td>
+<td>Merchant sub-user accesses another merchant's data via RBAC misconfiguration</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Centralized RBAC policy engine; tenant context always validated server-side; test with automated tenant-boundary tests</td>
+</tr>
+<tr>
+<td>T-MT3</td>
+<td><strong>Spoofing</strong></td>
+<td>White-label CSS/JS injection introduces malicious code into cardholder payment form</td>
+<td>Medium</td>
+<td>Critical</td>
+<td><strong>Critical</strong></td>
+<td>Strict Content Security Policy (CSP); sandbox white-label JS; validate CSS against allowlist; PCI DSS SAQ-A compliance for hosted form</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-risk-summary">5. Risk Summary<a class="headerlink" href="#5-risk-summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Risk Level</th>
+<th>Count</th>
+<th>Threat IDs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Critical</strong></td>
+<td>13</td>
+<td>T-A1, T-A5, T-A6, T-A7, T-A8, T-TK1, T-TK3, T-TK5, T-KM1, T-KM3, T-DT1, T-DT2, T-LM1, T-IR1, T-MT1, T-MT2, T-MT3</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>17</td>
+<td>T-A2, T-A3, T-A4, T-TK2, T-TK4, T-TK6, T-TK7, T-KM2, T-KM4, T-KM5, T-KM6, T-DT3, T-DT4, T-DT5, T-DT6, T-LM2, T-LM3, T-LM4, T-IR2, T-IR3, T-IR4, T-IR6</td>
+</tr>
+<tr>
+<td><strong>Medium</strong></td>
+<td>5</td>
+<td>T-LM5, T-LM6, T-IR5, T-MT2 (overlap), see full table</td>
+</tr>
+<tr>
+<td><strong>Low</strong></td>
+<td>1</td>
+<td>T-TK2 (initial rating Low–High, see table)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Critical findings (16 distinct threats) must be addressed before any system goes into production scope for PCI DSS assessment.</strong></p>
+</blockquote>
+<hr />
+<h2 id="6-top-priority-mitigations-critical-only">6. Top Priority Mitigations (Critical Only)<a class="headerlink" href="#6-top-priority-mitigations-critical-only" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Threat ID</th>
+<th>Recommended Control</th>
+<th>PCI DSS Req.</th>
+<th>OWASP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>T-LM1</td>
+<td>Automated PAN masking in all log pipelines; block CVV logging at framework level</td>
+<td>Req. 3.3, 10.3</td>
+<td>A9</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>T-A1, T-A8</td>
+<td>Short-lived JWT (RS256/ES256), per-merchant API key scoping, key rotation</td>
+<td>Req. 8.2, 8.3</td>
+<td>A07</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>T-TK3, T-TK5</td>
+<td>Opaque random tokens; strict tenant isolation at vault; no cross-tenant de-tokenization</td>
+<td>Req. 3.4, 3.5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>T-KM1, T-KM3</td>
+<td>HSM for root keys; per-purpose key policies; no plaintext key export</td>
+<td>Req. 3.5, 3.6</td>
+<td>—</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>T-MT1</td>
+<td>Tenant ID enforced at every DB query; row-level security; automated tenant-leak tests</td>
+<td>Req. 7.2</td>
+<td>A01</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>T-IR1</td>
+<td>JIT privileged access with MFA; session recording; break-glass alerting</td>
+<td>Req. 7.3, 10.2</td>
+<td>A04</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>T-A5, T-A7</td>
+<td>JWT claims audit; server-side RBAC; forbid CHD in tokens</td>
+<td>Req. 3.3, 7.1</td>
+<td>A07, A01</td>
+</tr>
+<tr>
+<td>P8</td>
+<td>T-DT1, T-DT2</td>
+<td>TLS 1.2+ only; HSTS; HMAC-signed webhooks with timestamp</td>
+<td>Req. 4.2, 6.4</td>
+<td>A02</td>
+</tr>
+<tr>
+<td>P9</td>
+<td>T-MT3</td>
+<td>CSP for white-label forms; sandboxed JS; hosted-form PCI SAQ-A path</td>
+<td>Req. 6.4</td>
+<td>A03</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-audit-checklist-mapping">7. Audit Checklist Mapping<a class="headerlink" href="#7-audit-checklist-mapping" title="Permanent link">&para;</a></h2>
+<p>The following audit checklist domains directly address the threats above. These map to the audit methodology (Goal M2):</p>
+<table>
+<thead>
+<tr>
+<th>Audit Domain</th>
+<th>Threat IDs Covered</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authentication &amp; API Security</td>
+<td>T-A1 to T-A8</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>Tokenization &amp; Card Vault</td>
+<td>T-TK1 to T-TK7</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>Key Management</td>
+<td>T-KM1 to T-KM6</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>Data-in-Transit / TLS</td>
+<td>T-DT1 to T-DT6</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Logging &amp; Monitoring</td>
+<td>T-LM1 to T-LM6</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>Incident Response</td>
+<td>T-IR1 to T-IR6</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Multi-Tenancy &amp; White Label</td>
+<td>T-MT1 to T-MT3</td>
+<td>Critical</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-follow-up-issues-required">8. Follow-up Issues Required<a class="headerlink" href="#8-follow-up-issues-required" title="Permanent link">&para;</a></h2>
+<p>The following issues should be created to drive remediation and deeper audit checklist development:</p>
+<ol>
+<li><strong>[Critical] Build Authentication Security Audit Checklist</strong> — JWT/OAuth hardening checks per T-A1 through T-A8</li>
+<li><strong>[Critical] Build Tokenization &amp; Key Management Audit Checklist</strong> — CHD protection checks per T-TK1/TK5, T-KM1/KM3</li>
+<li><strong>[Critical] Build Logging &amp; Data Masking Audit Checklist</strong> — PAN masking, audit trail, WORM storage per T-LM1/LM2</li>
+<li><strong>[High] Build Data-in-Transit Security Audit Checklist</strong> — TLS config, mTLS, webhook signing per T-DT1 through T-DT6</li>
+<li><strong>[High] Build Multi-Tenancy Isolation Audit Checklist</strong> — Tenant leak prevention, RBAC per T-MT1/MT3</li>
+<li><strong>[High] Build Incident Response Audit Checklist</strong> — JIT access, session recording, playbooks per T-IR1 through T-IR6</li>
+</ol>
+<hr />
+<h2 id="9-revision-history">9. Revision History<a class="headerlink" href="#9-revision-history" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Author</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2026-04-16</td>
+<td>Security Engineer</td>
+<td>Initial threat model — covers all six audit domains, 35+ threats rated by STRIDE</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>This document feeds M2 — Core Methodology per <code>docs/VISION.md</code>. Update when architecture decisions are finalized in <code>docs/ARCHITECTURE.md</code>.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
