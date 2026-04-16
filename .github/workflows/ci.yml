@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ruff and mypy
+        run: pip install ruff mypy
+      - name: Run ruff
+        run: ruff check . || true   # non-blocking until checks/ runner exists
+      - name: Run mypy
+        run: mypy checks/ runner/ || true   # non-blocking until M3
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dev dependencies
+        run: pip install pytest pytest-cov || true
+      - name: Run tests
+        run: pytest --tb=short -q || true   # non-blocking until M3 test suite exists
+
+  docs:
+    name: Docs build check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install MkDocs Material
+        run: pip install mkdocs-material
+      - name: Build docs (strict)
+        run: mkdocs build --strict || true   # non-blocking until mkdocs.yml is complete

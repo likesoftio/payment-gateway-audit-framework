@@ -1,0 +1,52 @@
+site_name: Payment Gateway Audit Framework
+site_description: Open audit methodology for payment platform engineering teams — PCI DSS v4.0, OWASP Payment Security, and reference architectures.
+site_url: https://likesoftio.github.io/payment-gateway-audit-framework
+repo_url: https://github.com/likesoftio/payment-gateway-audit-framework
+repo_name: likesoftio/payment-gateway-audit-framework
+edit_uri: edit/main/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Methodology:
+    - Overview: methodology/index.md
+  - Tech Stack: docs/TECH-STACK.md
+  - Architecture: docs/ARCHITECTURE.md
+  - Contributing: docs/CONTRIBUTING.md
